@@ -44,9 +44,7 @@ O multi-stage build reduz significativamente o tamanho da imagem final porque n�
 
 ### Print 2 — aplicação rodando com tarefas cadastradas
 
-![App Rodando 1](./docs/imagens/02-app-rodando01.png)
-
-![App Rodando 2](./docs/imagens/02-app-rodando02.png)
+![App Rodando](./docs/imagens/02-app-rodando01.png)
 
 ---
 
@@ -86,9 +84,7 @@ Docker fornece um serviço de DNS interno na rede. Quando o app faz uma requisi�
 
 ### Print 5 — docker network inspect
 
-![Network Inspect 1](./docs/imagens/05.1-docker-network-inspect.png)
-
-![Network Inspect 2](./docs/imagens/05.2-docker-network-inspect.png)
+![Network Inspect](./docs/imagens/05.1-docker-network-inspect.png)
 
 ### Print 6 — dados dentro do MySQL (select * from todo_items;)
 
@@ -134,6 +130,8 @@ Docker fornece um serviço de DNS interno na rede. Quando o app faz uma requisi�
 
 ![CI Verde](./docs/imagens/08-ci-verde.png)
 
+![CI Verde 2](./docs/imagens/08.1-ci-verde.png)
+
 ---
 
 ## 7. Quebra proposital do CI
@@ -163,6 +161,8 @@ https://github.com/MayuRafael/meu-projeto-docker
 ### Print 9 — execução vermelha ❌ + log do erro
 
 ![CI Vermelho](./docs/imagens/09-ci-vermelho.png)
+
+![CI Vermelho 2](./docs/imagens/09.2-ci-vermelho.png)
 
 ### Print 10 — execução verde novamente após correção ✅
 
