@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: ${MYSQL_USER}
-     # MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_DB: ${MYSQL_DATABASE}
     networks:
       - app-net
