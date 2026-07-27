@@ -128,9 +128,7 @@ Docker fornece um serviço de DNS interno na rede. Quando o app faz uma requisi�
 
 ### Print 8 — execução verde ✅
 
-![CI Verde](/docs/imagens/08-ci-verde.png)
-
-![CI Verde 2](/docs/imagens/08.1-ci-verde.png)
+![CI Verde](./docs/imagens/08.3-ci-verde.png)
 
 ---
 
@@ -160,9 +158,7 @@ https://github.com/MayuRafael/meu-projeto-docker
 
 ### Print 9 — execução vermelha ❌ + log do erro
 
-![CI Vermelho](./docs/imagens/09-ci-vermelho.png)
-
-![CI Vermelho 2](./docs/imagens/09.2-ci-vermelho.png)
+![CI Vermelho](./docs/imagens/09.3-ci-vermelho.png)
 
 ### Print 10 — execução verde novamente após correção ✅
 
