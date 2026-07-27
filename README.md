@@ -128,9 +128,9 @@ Docker fornece um serviço de DNS interno na rede. Quando o app faz uma requisi�
 
 ### Print 8 — execução verde ✅
 
-![CI Verde](./docs/imagens/08-ci-verde.png)
+![CI Verde](/docs/imagens/08-ci-verde.png)
 
-![CI Verde 2](./docs/imagens/08.1-ci-verde.png)
+![CI Verde 2](/docs/imagens/08.1-ci-verde.png)
 
 ---
 
