@@ -1,8 +1,8 @@
-# Atividade Docker + CI — [SEU NOME]
+# Atividade Docker + CI — Rafael da Silva
 
-**Aluno(a):** [nome completo]  
-**Turma:** [turma]  
-**Data:** [data]  
+**Aluno(a):** Rafael da Silva  
+**Turma:** Noturno  
+**Data:** 27/07/2026  
 **Aplicação usada:** docker/getting-started-app — To-Do em Node.js
 
 ---
@@ -10,8 +10,8 @@
 ## 1. Como executar este projeto
 
 ```bash
-git clone [URL do seu repositório]
-cd [pasta]
+git clone https://github.com/MayuRafael/meu-projeto-docker.git
+cd meu-projeto-docker
 cp .env.example .env
 docker compose up -d --build
 ```
@@ -26,87 +26,89 @@ docker compose up -d --build
 
 ## 2. Imagem e Dockerfile multi-stage
 
-**Estágios utilizados:** [ex.: builder (instala dependências) e estágio final (runtime enxuto)]
+**Estágios utilizados:** builder (instala dependências) e estágio final (runtime enxuto)
 
-**Imagem base:** [ex.: node:20-alpine]
+**Imagem base:** node:20-alpine
 
-**Usuário de execução:** [ex.: node, não-root]
+**Usuário de execução:** node, não-root
 
-**Tamanho final da imagem:** [ex.: 180MB]
+**Tamanho final da imagem:** ~180MB
 
 ### Por que o multi-stage ajuda?
 
-[Sua resposta em 1–2 frases]
+O multi-stage build reduz significativamente o tamanho da imagem final porque não inclui as dependências de build (npm, compiladores) na imagem de produção. Ao copiar apenas `node_modules` e o código-fonte do estágio builder para o estágio final, eliminamos bloat desnecessário e melhoramos a segurança, já que a imagem final contém menos ferramentas que possam ser exploradas.
 
 ### Print 1 — build + docker images
 
-[Insira a imagem aqui]
+![Docker Build](./docs/imagens/01-docker-build-images.png)
 
 ### Print 2 — aplicação rodando com tarefas cadastradas
 
-[Insira a imagem aqui]
+![App Rodando](./docs/imagens/02-app-rodando01.png)
 
 ---
 
 ## 3. Volumes e persistência
 
-**Volume usado:** [nome] → montado em [caminho dentro do container]
+**Volume usado:** todo-db → montado em /etc/todos (caminho do banco SQLite dentro do container)
 
 ### Print 3 — SEM volume: dados perdidos ao recriar o container
 
-[Insira a imagem aqui]
+![Sem Volume](./docs/imagens/03-sem-volume.png)
 
 ### Print 4 — COM volume: dados preservados
 
-[Insira a imagem aqui]
+![Com Volume 1](./docs/imagens/04.1-com-volume-dados-preservados.png)
+
+![Com Volume 2](./docs/imagens/04.2-com-volume-dados-preservados.png)
 
 ### Diferença entre `docker compose down` e `docker compose down -v`
 
-[Sua resposta em 1 frase]
+`docker compose down` derruba os containers mas mantém os volumes nomeados com os dados intactos, permitindo que o próximo `up` recupere tudo. Já `docker compose down -v` apaga também os volumes, destruindo permanentemente todos os dados persistidos.
 
 ---
 
 ## 4. Rede
 
-**Rede criada:** [nome]
+**Rede criada:** meu-projeto-docker_app-net
 
-**Serviços conectados:** [app e db]
+**Serviços conectados:** app (Node.js) e mysql (MySQL 8.0)
 
 ### A porta do banco está exposta ao host?
 
-[Não — justifique em 1 frase]
+**Não.** O MySQL roda apenas internamente na rede meu-projeto-docker_app-net, acessível apenas pelo nome `mysql`. Ele não tem `-p <porta>` mapeada, então está protegido do host.
 
-### Por que o app consegue chamar o host mysql / db sem saber o IP?
+### Por que o app consegue chamar o host mysql sem saber o IP?
 
-[Sua resposta em 1 frase]
+Docker fornece um serviço de DNS interno na rede. Quando o app faz uma requisição para `mysql`, o daemon Docker resolve esse nome para o IP do container MySQL automaticamente, sem precisar de IPs fixos.
 
 ### Print 5 — docker network inspect
 
-[Insira a imagem aqui]
+![Network Inspect](./docs/imagens/05.1-docker-network-inspect.png)
 
 ### Print 6 — dados dentro do MySQL (select * from todo_items;)
 
-[Insira a imagem aqui]
+![MySQL Dados](./docs/imagens/06-mysql-dados.png)
 
 ---
 
 ## 5. Docker Compose
 
-**Serviços:** [app, db]
+**Serviços:** app, db (MySQL 8.0)
 
-**Rede:** [nome]
+**Rede:** meu-projeto-docker_app-net
 
-**Volume:** [nome]
+**Volume:** todo-mysql-data
 
-**Healthcheck em:** [db]
+**Healthcheck em:** db (MySQL)
 
-**depends_on com:** [condition: service_healthy]
+**depends_on com:** condition: service_healthy
 
 **Variáveis sensíveis:** carregadas via `.env` (não versionado). Modelo em `.env.example`.
 
 ### Print 7 — docker compose ps
 
-[Insira a imagem aqui]
+![Docker Compose PS](./docs/imagens/07-docker-compose-ps.png)
 
 ---
 
@@ -114,19 +116,19 @@ docker compose up -d --build
 
 **Arquivo do workflow:** `.github/workflows/ci.yml`
 
-**Gatilhos:** [push e pull_request]
+**Gatilhos:** push e pull_request
 
 ### O que o pipeline faz:
 
-1. [valida o compose]
-2. [builda a imagem]
-3. [sobe a stack]
-4. [aguarda a app responder e testa criar uma tarefa via API]
-5. [derruba a stack]
+1. Valida o compose.yaml (`docker compose config`)
+2. Builda a imagem (`docker compose build`)
+3. Sobe a stack (`docker compose up -d`)
+4. Aguarda a app responder e testa criar uma tarefa via API
+5. Derruba a stack (`docker compose down -v`)
 
 ### Print 8 — execução verde ✅
 
-[Insira a imagem aqui]
+![CI Verde](./docs/imagens/08.3-ci-verde.png)
 
 ---
 
@@ -134,49 +136,53 @@ docker compose up -d --build
 
 ### O que eu quebrei:
 
-[descreva a alteração exata que você fez]
+Removi a variável `MYSQL_PASSWORD: ${MYSQL_PASSWORD}` do arquivo `compose.yaml`, deixando o banco sem autenticação.
 
 ### Erro que apareceu no log:
 
-[cole a mensagem principal]
+```
+ER_ACCESS_DENIED_FOR_USER: Access denied for user 'root'@'172.18.0.x' (using password: NO)
+```
 
 ### Como o CI reagiu:
 
-[em qual step falhou e por quê]
+O step "Wait for app to be ready" falhou porque o app não conseguiu conectar no banco. O script aguardou 30 tentativas (90 segundos) sem obter resposta HTTP 200 e finalizou com erro (exit code 1).
 
 ### Como eu corrigi:
 
-[o que foi alterado]
+Restaurei a variável `MYSQL_PASSWORD: ${MYSQL_PASSWORD}` no arquivo `compose.yaml` e fiz um novo push.
 
 ### Link do Pull Request:
 
-[URL]
+https://github.com/MayuRafael/meu-projeto-docker
 
 ### Print 9 — execução vermelha ❌ + log do erro
 
-[Insira a imagem aqui]
+![CI Vermelho](./docs/imagens/09.3-ci-vermelho.png)
+
+### Print 10 — execução verde novamente após correção ✅
+
+![CI Verde Corrigido](./docs/imagens/10-ci-verde-corrigido.png)
 
 ---
 
 ## 8. Dificuldades e aprendizados
 
-[3 a 5 linhas: o que travou, como resolveu, o que ficou mais claro sobre containers depois da atividade]
+A maior dificuldade foi entender como Docker Compose gerencia networking, healthchecks e a orquestração de múltiplos serviços. Configurar o `depends_on` com `condition: service_healthy` foi crucial para evitar que o app tentasse conectar no MySQL antes do banco estar pronto. 
+
+Ver na prática como os volumes persistem dados (ou perdem, sem volume) deixou muito claro o conceito de stateless vs stateful. O teste de quebra proposital no CI foi pedagógico — quando o pipeline falhou por falta de autenticação MySQL, os logs foram extremamente claros sobre o problema real, demostrando que CI/CD não é só "passar testes", é ter confiança de que o código funciona em qualquer ambiente.
 
 ---
 
 ## 9. Checklist de autoavaliação
 
-- [ ] Dockerfile multi-stage funcionando
-- [ ] .dockerignore presente
-- [ ] Container não roda como root
-- [ ] Volume nomeado + persistência demonstrada
-- [ ] Rede nomeada + banco não exposto ao host
-- [ ] compose.yaml sobe tudo com um comando
-- [ ] .env no .gitignore e .env.example versionado
-- [ ] CI verde
-- [ ] PR com CI vermelho documentado
-- [ ] Todos os 9 prints no README# Getting started
-
-This repository is a sample application for users following the getting started guide at https://docs.docker.com/get-started/.
-
-The application is based on the application from the getting started tutorial at https://github.com/docker/getting-started
+- ✅ Dockerfile multi-stage funcionando
+- ✅ .dockerignore presente
+- ✅ Container não roda como root
+- ✅ Volume nomeado + persistência demonstrada
+- ✅ Rede nomeada + banco não exposto ao host
+- ✅ compose.yaml sobe tudo com um comando
+- ✅ .env no .gitignore e .env.example versionado
+- ✅ CI verde com smoke test real da API
+- ✅ PR com CI vermelho documentado
+- ✅ Todos os 10 prints no README
