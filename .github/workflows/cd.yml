@@ -1,7 +1,7 @@
 name: CD - Publicar no Docker Hub
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 jobs:
   publicar:
     runs-on: ubuntu-latest
